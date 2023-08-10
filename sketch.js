@@ -37,8 +37,8 @@ function setup() {
 }
 
 function preload() {
-  sound1 = loadSound("RullyShabaraSampleT01.mp3");
-  sound2 = loadSound("RullyShabaraSampleT02.mp3");
+  sound1 = loadSound("RullyShabaraSampleT06.mp3");
+  sound2 = loadSound("RullyShabaraSampleT07.mp3");
   currentSound = random([sound1, sound2]);
 }
 
