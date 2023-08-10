@@ -5,6 +5,10 @@ let sound1, sound2;
 let currentSound;
 let colorPicker;
 let resetButton;
+let autonomousMode = false;
+let lastPoint = null;
+let autonomousButton;
+let autonomousModeActivated = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -17,23 +21,42 @@ function setup() {
   });
 
   colorPicker = createColorPicker("#F9F5F6");
-  colorPicker.position(60, 20);
+  colorPicker.position(10, 50);
 
   resetButton = createButton("Reset");
-  resetButton.position(10, 23);
+  resetButton.position(10, 20);
   resetButton.mousePressed(resetSketch);
+
+  autonomousButton = createButton("Xhabarabot Takeover");
+  autonomousButton.position(10, 80);
+  autonomousButton.mousePressed(() => {
+    autonomousMode = !autonomousMode;
+    autonomousModeActivated = false;
+    autonomousButton.html(autonomousMode ? "Xhabarabot Mode" : "Xhabarabot Mode");
+  });
 }
 
 function preload() {
-  sound1 = loadSound("RullyShabaraSampleT07.mp3");
-  sound2 = loadSound("RullyShabaraSampleT06.mp3");
+  sound1 = loadSound("RullyShabaraSampleT01.mp3");
+  sound2 = loadSound("RullyShabaraSampleT02.mp3");
   currentSound = random([sound1, sound2]);
 }
 
 function draw() {
-  if (!paused && firstMouseClick) {
-    let color = colorPicker.color();
-    variableEllipse(mouseX, mouseY, pmouseX, pmouseY, color);
+  if (autonomousMode && autonomousModeActivated) {
+    let x = noise(frameCount * 0.01) * width;
+    let y = noise(frameCount * 0.01 + 1000) * height;
+
+    if (lastPoint) {
+      variableEllipse(x, y, lastPoint.x, lastPoint.y);
+    }
+
+    lastPoint = { x, y };
+  } else {
+    lastPoint = null;
+    if (!paused && firstMouseClick) {
+      variableEllipse(mouseX, mouseY, pmouseX, pmouseY, colorPicker.color());
+    }
   }
 }
 
@@ -55,6 +78,10 @@ function variableEllipse(x, y, px, py) {
 }
 
 function mousePressed() {
+  if (autonomousMode) {
+    autonomousModeActivated = true;
+    autonomousButton.html("Stop Xhabarabot");
+  }
   if (!firstMouseClick) {
     firstMouseClick = true;
   }
