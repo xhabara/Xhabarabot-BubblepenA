@@ -1,40 +1,4 @@
-let ellipses = [];
-let paused = false;
-let firstMouseClick = false;
-let sound1, sound2;
-let currentSound;
-let colorPicker;
-let resetButton;
-let autonomousMode = false;
-let lastPoint = null;
-let autonomousButton;
-let autonomousModeActivated = false;
-
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  background(155);
-
-  window.addEventListener("keydown", function (e) {
-    if (e.key === "s") {
-      saveSketch();
-    }
-  });
-
-  colorPicker = createColorPicker("#F9F5F6");
-  colorPicker.position(10, 50);
-
-  resetButton = createButton("Reset");
-  resetButton.position(10, 20);
-  resetButton.mousePressed(resetSketch);
-
-  autonomousButton = createButton("Xhabarabot Takeover");
-  autonomousButton.position(10, 80);
-  autonomousButton.mousePressed(() => {
-    autonomousMode = !autonomousMode;
-    autonomousModeActivated = false;
-    autonomousButton.html(autonomousMode ? "Xhabarabot Mode" : "Xhabarabot Mode");
-  });
-}
+246322
 
 function preload() {
   sound1 = loadSound("RullyShabaraSampleT06.mp3");
@@ -62,20 +26,41 @@ function draw() {
 
 function variableEllipse(x, y, px, py) {
   let speed = abs(x - px) + abs(y - py);
-  let rate = map(speed, 0, 35, 0.5, 2);
-  let volume = map(speed, 0, 5, 0.1, 5);
+  let rate = map(speed, 0, 35, 0.5, 2); // Default values
+  let volume = map(speed, 0, 5, 0.1, 5); // Default volume
   stroke(55);
   ellipse(x, y, speed, speed);
   ellipses.push({ x: x, y: y, size: speed, color: color });
+
+  // Use a local variable to decide randomly
+  let effect = soundEffectDropdown.value() === 'random' ? random(['slow', 'fast', 'reverse', 'default']) : soundEffectDropdown.value();
+
+  switch (effect) {
+    case 'slow':
+      rate = map(speed, 0, 25, 0.15, 0.41);
+      break;
+    case 'fast':
+      rate = map(speed, 0, 15, 1, 4);
+      break;
+    case 'reverse':
+      // Assuming negative rate plays the sound in reverse
+      rate = -1 * map(speed, 0, 35, 0.5, 2);
+      break;
+    case 'default':
+      // Default rate and volume are already set
+      break;
+  }
 
   currentSound.rate(rate);
   currentSound.amp(volume);
 
   if (speed > 15 && firstMouseClick) {
     currentSound.play();
-    currentSound = currentSound == sound1 ? sound2 : sound1;
+    // Switch to the other sound for the next play
+    currentSound = currentSound === sound1 ? sound2 : sound1;
   }
 }
+
 
 function mousePressed() {
   if (autonomousMode) {
@@ -97,6 +82,10 @@ function mousePressed() {
 function resetSketch() {
   ellipses = [];
   background(155);
+}
+
+function saveSketch() {
+  saveCanvas("mySketch", "png");
 }
 
 function saveSketch() {
