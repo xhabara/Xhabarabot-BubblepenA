@@ -162,5 +162,3 @@ function resetSketch() {
 function saveSketch() {
   saveCanvas("mySketch", "png");
 }
-
-
