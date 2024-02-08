@@ -1,4 +1,79 @@
-246322
+let ellipses = [];
+let paused = false;
+let firstMouseClick = false;
+let sound1, sound2;
+let currentSound;
+let colorPicker;
+let resetButton;
+let autonomousMode = false;
+let lastPoint = null;
+let autonomousButton;
+let autonomousModeActivated = false;
+let soundEffectDropdown;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  background(155);
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "s") {
+      saveSketch();
+    }
+  });
+
+  colorPicker = createColorPicker("#FDF8F9");
+  colorPicker.position(10, 65);
+  colorPicker.style('width', '80px');
+  colorPicker.style('height', '40px');
+  colorPicker.style('border', 'none');
+  colorPicker.style('border-radius', '5px');
+  colorPicker.style('padding', '5px');
+
+  resetButton = createButton("Clear Canvas");
+  resetButton.position(100, 20);
+  resetButton.mousePressed(resetSketch);
+  styleButton(resetButton);
+
+  let refreshButton = createButton('Refresh');
+  refreshButton.position(10, 20); // Adjust this position to fit your layout
+  refreshButton.mousePressed(() => window.location.reload());
+  styleButton(refreshButton);
+  
+  soundEffectDropdown = createSelect();
+  soundEffectDropdown.position(100, 70);
+  soundEffectDropdown.option('Default', 'default');
+  soundEffectDropdown.option('Slow Down', 'slow');
+  soundEffectDropdown.option('Speed Up', 'fast');
+  soundEffectDropdown.option('Reverse', 'reverse');
+  soundEffectDropdown.option('Mixed', 'random');
+  soundEffectDropdown.selected('default');
+  soundEffectDropdown.style('width', '120px');
+  soundEffectDropdown.style('height', '30px');
+  soundEffectDropdown.style('background-color', '#FFF');
+  soundEffectDropdown.style('border', '1px solid #000');
+  soundEffectDropdown.style('border-radius', '5px');
+  soundEffectDropdown.style('padding', '5px');
+  
+  autonomousButton = createButton("Xhabarabot Takeover");
+  autonomousButton.position(10, 120);
+  autonomousButton.mousePressed(() => {
+    autonomousMode = !autonomousMode;
+    autonomousButton.html(autonomousMode ? "Xhabarabot Mode" : "Xhabarabot Mode");
+  });
+  styleButton(autonomousButton);
+}
+
+function styleButton(button) {
+  button.style('background-color', '#F8F7F3');
+  button.style('color', '#333');
+  button.style('border', 'none');
+  button.style('border-radius', '5px');
+  button.style('padding', '10px 15px');
+  button.style('cursor', 'pointer');
+  button.style('font-family', 'Arial, sans-serif');
+  button.mouseOver(() => button.style('background-color', '#ddd'));
+  button.mouseOut(() => button.style('background-color', '#F9F5F6'));
+}
 
 function preload() {
   sound1 = loadSound("RullyShabaraSampleT06.mp3");
@@ -88,6 +163,4 @@ function saveSketch() {
   saveCanvas("mySketch", "png");
 }
 
-function saveSketch() {
-  saveCanvas("mySketch", "png");
-}
+
